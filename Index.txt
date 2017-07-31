@@ -1,0 +1,68 @@
+'use strict';
+var Alexa = require('alexa-sdk');
+
+//===========================================================================================================
+
+// var APP_ID = ;
+
+var APP_ID = "amzn1.ask.skill.ffa331b3-3ed7-4760-875b-97994e27d10d";
+
+var SKILL_NAME = "Scottish Facts";
+var GET_FACT_MESSAGE = "Here's historical fact about scotland: ";
+var HELP_MESSAGE = "You can say tell me a scottish fact, or, you can say exit... What can I help you with?";
+var HELP_REPROMPT = "What can I help you with?";
+var STOP_MESSAGE = "Goodbye!";
+
+
+//Scottish Fact data
+
+var data = [
+  "Scotland was an independent country until 1603. Then the king of Scotland became king of England, but the two country did not merge their governments until 1707, to form the Kingdom of Great Britain.",
+  "The Bank of Scotland, founded in 1695, is the oldest surviving bank in the UK. It was also the first bank in Europe to print its own banknotes, a function it still performs today.",
+  "The Encyclopædia Britannica, the world's oldest surviving encyclopedia and one of the most scholarly of encyclopaedias, was first published between 1768 and 1771 in Edinburgh. The first nine editions were all edited in Scotland. From 1901 it was edited conjointly in New York City and London.",
+  "In 1794 Scottish engineer William Murdoch built the first-ever house to be lit by gas",
+  "Edinburgh was the first city in the world with its own fire brigade, in 1824.",
+  "Established in 1908, RAF Leuchars in Fife is the oldest continuously operating military air base in the world.",
+  "The Scottish Parliament has been reconvened on 1st July 1999 for the first time after nearly 300 years of interruption. It had been dissolved when the Act of Union was signed in 1707.",
+  "One particularity of Scots law is that the criminal trial may end in one of three verdicts: guilty, not guilty, or not proven. The not proven verdict may be referred to as the Scottish Verdict abroad.",
+  "The world's first international rugby match was played at Raeburn Place, Edinburgh on 27 March 1871, opposing Scotland to England.",
+  "The Duke of Athol commands the only legal private army in Europe, the Atholl Highlanders, whose headquarters are at Blair Castle, Perthshire. Blair castle also has the distinction of being the last ever place in Britain to have been besieged, in 1746",
+  "Scotland has spawned an amazing number of great thinkers and inventors for its diminutive size : Adam Smith, James Watt, David Hume, John Stuart Mill, Adam Ferguson, Sir Alexander Fleming, Alexander Graham Bell...",
+  "Other famous Americans with Scottish ancestry include John Paul Jones (father of the American Navy), Thomas Edison (inventor), Ben Affleck (actor), Heather Locklear (actress)",
+  "About 5 million Americans reported Scottish ancestry. The highest concentration of people of Scottish descent are found in New England and in the North-West.",
+  "A Canadian psychologist is selling a video that teaches you how to test your dog’s IQ. Here’s how it works: If you spend $12.99 for the video, your dog is smarter than you.",
+]
+
+//=========================================================================================================================================
+//Editing anything below this line might break your skill.
+//=========================================================================================================================================
+exports.handler = function(event, context, callback) {
+    var alexa = Alexa.handler(event, context);
+    alexa.APP_ID = APP_ID;
+    alexa.registerHandlers(handlers);
+    alexa.execute();
+};
+
+var handlers = {
+    'LaunchRequest': function () {
+        this.emit('GetNewFactIntent');
+    },
+    'GetNewFactIntent': function () {
+        var factArr = data;
+        var factIndex = Math.floor(Math.random() * factArr.length);
+        var randomFact = factArr[factIndex];
+        var speechOutput = GET_FACT_MESSAGE + randomFact;
+        this.emit(':tellWithCard', speechOutput, SKILL_NAME, randomFact)
+    },
+    'AMAZON.HelpIntent': function () {
+        var speechOutput = HELP_MESSAGE;
+        var reprompt = HELP_REPROMPT;
+        this.emit(':ask', speechOutput, reprompt);
+    },
+    'AMAZON.CancelIntent': function () {
+        this.emit(':tell', STOP_MESSAGE);
+    },
+    'AMAZON.StopIntent': function () {
+        this.emit(':tell', STOP_MESSAGE);
+    }
+};
